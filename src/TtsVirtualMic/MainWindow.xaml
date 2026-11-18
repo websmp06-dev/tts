@@ -1,0 +1,107 @@
+<Window x:Class="TtsVirtualMic.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TTS Virtual Mic" Width="1020" Height="700" MinWidth="900" MinHeight="620"
+        Background="{StaticResource Bg}" Foreground="{StaticResource Fg}"
+        FontFamily="Segoe UI" FontSize="14" WindowStartupLocation="CenterScreen">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="270"/>
+    </Grid.ColumnDefinitions>
+
+    <!-- Panel principal -->
+    <Grid Grid.Column="0" Margin="24">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <DockPanel Grid.Row="0" Margin="0,0,0,16">
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+          <Border Background="{StaticResource Panel}" CornerRadius="16" Padding="12,6" Margin="0,0,10,0">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse x:Name="StatusDot" Width="10" Height="10" Fill="{StaticResource Muted}" Margin="0,0,8,0"/>
+              <TextBlock x:Name="StatusText" Text="Comprobando..."/>
+            </StackPanel>
+          </Border>
+          <Button Content="🩺  Diagnóstico" Click="Diag_Click" Margin="0"/>
+        </StackPanel>
+        <StackPanel>
+          <TextBlock Text="TTS Virtual Mic" FontSize="24" FontWeight="Bold"/>
+          <TextBlock Text="En Discord o en el juego elegí como micrófono:  CABLE Output" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,2,0,0"/>
+        </StackPanel>
+      </DockPanel>
+
+      <TextBox x:Name="InputBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap"
+               VerticalScrollBarVisibility="Auto" FontSize="18" Padding="16" PreviewKeyDown="Input_KeyDown"/>
+
+      <StackPanel Grid.Row="2" Margin="0,16,0,0">
+        <TextBlock Text="Voz" Foreground="{StaticResource Muted}" Margin="0,0,0,6"/>
+        <ComboBox x:Name="VoiceBox" Height="42" DisplayMemberPath="Display" SelectionChanged="Voice_Changed"/>
+        <UniformGrid Columns="2" Margin="0,6,0,0">
+          <StackPanel Margin="0,10,14,0">
+            <Grid><TextBlock Text="Velocidad"/><TextBlock x:Name="SpeedLabel" HorizontalAlignment="Right" Foreground="{StaticResource Muted}"/></Grid>
+            <Slider x:Name="SpeedSlider" Minimum="0.5" Maximum="2" ValueChanged="Slider_Changed"/>
+          </StackPanel>
+          <StackPanel Margin="14,10,0,0">
+            <Grid><TextBlock Text="Tono (pitch)"/><TextBlock x:Name="PitchLabel" HorizontalAlignment="Right" Foreground="{StaticResource Muted}"/></Grid>
+            <Slider x:Name="PitchSlider" Minimum="-12" Maximum="12" ValueChanged="Slider_Changed"/>
+          </StackPanel>
+          <StackPanel Margin="0,10,14,0">
+            <Grid><TextBlock Text="Volumen"/><TextBlock x:Name="VolumeLabel" HorizontalAlignment="Right" Foreground="{StaticResource Muted}"/></Grid>
+            <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" ValueChanged="Slider_Changed"/>
+          </StackPanel>
+          <StackPanel Margin="14,10,0,0">
+            <Grid><TextBlock Text="Pausa entre frases"/><TextBlock x:Name="PauseLabel" HorizontalAlignment="Right" Foreground="{StaticResource Muted}"/></Grid>
+            <Slider x:Name="PauseSlider" Minimum="0" Maximum="3000" ValueChanged="Slider_Changed"/>
+          </StackPanel>
+        </UniformGrid>
+      </StackPanel>
+
+      <DockPanel Grid.Row="3" Margin="0,20,0,0">
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+          <CheckBox x:Name="MonitorCheck" Content="Escucharme (monitor)" Click="Options_Click"/>
+          <CheckBox x:Name="TrayCheck" Content="Minimizar a la bandeja" Click="Options_Click" Margin="0"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Button x:Name="PlayBtn" Style="{StaticResource Primary}" Content="▶  Reproducir" Click="Play_Click"/>
+          <Button Content="■  Detener" Click="Stop_Click"/>
+          <Button Content="🎧  Probar voz" Click="Test_Click"/>
+          <Button Content="📋  Pegar" Click="Paste_Click"/>
+          <Button Content="🗑  Borrar" Click="Clear_Click"/>
+        </StackPanel>
+      </DockPanel>
+
+      <DockPanel Grid.Row="4" Margin="0,18,0,0">
+        <Ellipse x:Name="Led" Width="12" Height="12" Fill="{StaticResource Muted}" DockPanel.Dock="Left" Margin="0,0,10,0"/>
+        <TextBlock x:Name="LiveText" Text="En espera" Width="130" DockPanel.Dock="Left" Foreground="{StaticResource Muted}"/>
+        <ProgressBar x:Name="LevelBar" Height="8" Minimum="0" Maximum="1" Foreground="{StaticResource Accent}"
+                     Background="{StaticResource Panel2}" BorderThickness="0" VerticalAlignment="Center"/>
+      </DockPanel>
+
+      <TextBlock x:Name="ErrorText" Grid.Row="5" Visibility="Collapsed" TextWrapping="Wrap"
+                 Foreground="{StaticResource Danger}" Margin="0,12,0,0"/>
+    </Grid>
+
+    <!-- Historial -->
+    <Border Grid.Column="1" Background="{StaticResource Panel}" Padding="16">
+      <DockPanel>
+        <Button DockPanel.Dock="Bottom" Content="Limpiar historial" Click="ClearHistory_Click" Margin="0,10,0,0"/>
+        <TextBlock DockPanel.Dock="Top" Text="Historial" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+        <TextBlock DockPanel.Dock="Top" Text="Doble clic para recuperar una frase" FontSize="11" Foreground="{StaticResource Muted}" Margin="0,0,0,8"/>
+        <ListBox x:Name="HistoryList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="History_DoubleClick">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" ToolTip="{Binding}"/>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </Border>
+  </Grid>
+</Window>

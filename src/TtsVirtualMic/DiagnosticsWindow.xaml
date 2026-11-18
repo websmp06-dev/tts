@@ -1,0 +1,22 @@
+<Window x:Class="TtsVirtualMic.DiagnosticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Diagnóstico del micrófono virtual" Width="640" Height="560"
+        Background="{StaticResource Bg}" Foreground="{StaticResource Fg}"
+        FontFamily="Segoe UI" FontSize="14" WindowStartupLocation="CenterOwner">
+  <DockPanel Margin="22">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,16,0,0">
+      <Button x:Name="RunBtn" Style="{StaticResource Primary}" Content="Ejecutar de nuevo" Click="Run_Click"/>
+      <Button Content="Opciones de sonido" Click="Sound_Click"/>
+      <Button Content="Privacidad del micrófono" Click="Privacy_Click"/>
+    </StackPanel>
+    <TextBlock DockPanel.Dock="Top" Text="Diagnóstico" FontSize="22" FontWeight="Bold"/>
+    <TextBlock DockPanel.Dock="Top" Margin="0,4,0,14" Foreground="{StaticResource Muted}" TextWrapping="Wrap"
+               Text="Envía un tono por CABLE Input y comprueba que llega a CABLE Output (el micrófono virtual)."/>
+    <Border Background="{StaticResource Panel}" CornerRadius="12" Padding="16">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <TextBlock x:Name="Report" TextWrapping="Wrap" LineHeight="22"/>
+      </ScrollViewer>
+    </Border>
+  </DockPanel>
+</Window>
