@@ -29,7 +29,7 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "Crear un acceso directo en el escritorio"; GroupDescription: "Accesos directos:"
-Name: "installcable"; Description: "Instalar el micrófono virtual (VB-CABLE, requiere Internet)"; GroupDescription: "Micrófono virtual:"; Check: not HasCable
+Name: "installcable"; Description: "Instalar el micrófono virtual (VB-CABLE, requiere Internet)"; GroupDescription: "Micrófono virtual:"; Check: NoCable
 
 [Files]
 Source: "..\publish\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
@@ -48,7 +48,8 @@ Type: filesandordirs; Name: "{app}\vbcable"
 [Code]
 var
   DownloadPage: TDownloadWizardPage;
-  HasCable: Boolean;
+  CableChecked: Boolean;
+  HasCableValue: Boolean;
   CableDownloaded: Boolean;
   CableInstalledNow: Boolean;
 
@@ -61,9 +62,23 @@ begin
     '', SW_HIDE, ewWaitUntilTerminated, Code) and (Code = 0);
 end;
 
+function HasCable: Boolean;
+begin
+  if not CableChecked then
+  begin
+    HasCableValue := DetectCable;
+    CableChecked := True;
+  end;
+  Result := HasCableValue;
+end;
+
+function NoCable: Boolean;
+begin
+  Result := not HasCable;
+end;
+
 procedure InitializeWizard;
 begin
-  HasCable := DetectCable;
   DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), SetupMessage(msgPreparingDesc), nil);
 end;
 
