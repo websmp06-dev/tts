@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Descargar motores TTS (Piper, eSpeak NG)
+        shell: pwsh
+        run: ./scripts/fetch-tools.ps1
+
+      - name: Publicar aplicación (exe autocontenido)
+        run: dotnet publish src/TtsVirtualMic -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
+
+      - name: Compilar instalador (Inno Setup)
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\setup.iss
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TtsVirtualMic-Setup
+          path: dist/TtsVirtualMic-Setup.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TtsVirtualMic-portable
+          path: publish/
