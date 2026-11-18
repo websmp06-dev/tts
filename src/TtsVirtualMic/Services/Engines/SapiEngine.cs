@@ -6,6 +6,7 @@ using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
 using TtsVirtualMic.Models;
+using VoiceInfo = TtsVirtualMic.Models.VoiceInfo;
 
 namespace TtsVirtualMic.Services.Engines;
 
