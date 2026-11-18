@@ -24,10 +24,10 @@ public partial class DiagnosticsWindow : Window
 
     async void Run_Click(object sender, RoutedEventArgs e) => await RunAsync();
 
-    static void Sound_Click(object sender, RoutedEventArgs e) =>
+    void Sound_Click(object sender, RoutedEventArgs e) =>
         Process.Start(new ProcessStartInfo("control.exe", "mmsys.cpl") { UseShellExecute = true });
 
-    static void Privacy_Click(object sender, RoutedEventArgs e) =>
+    void Privacy_Click(object sender, RoutedEventArgs e) =>
         Process.Start(new ProcessStartInfo("ms-settings:privacy-microphone") { UseShellExecute = true });
 
     async Task RunAsync()
